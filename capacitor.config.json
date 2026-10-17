@@ -1,0 +1,8 @@
+{
+  "appId": "com.zenith.client",
+  "appName": "Zenith Client",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
