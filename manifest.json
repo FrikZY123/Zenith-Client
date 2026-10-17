@@ -1,0 +1,11 @@
+{
+  "name": "Zenith Client",
+  "short_name": "Zenith",
+  "description": "Zenith Client interface prototype",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#090b12",
+  "theme_color": "#090b12",
+  "orientation": "portrait"
+}
