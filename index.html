@@ -14,7 +14,8 @@
     .shell { width:min(100% - 32px,900px); margin:0 auto; padding:24px 0 48px; }
     header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 0 34px; }
     .brand { display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.12em; }
-    .logo { display:grid; place-items:center; width:42px; height:42px; border-radius:13px; background:linear-gradient(140deg,var(--accent),#4c45a8); box-shadow:0 8px 30px #6e61ff40; font-size:20px; }
+    .logo { display:grid; place-items:center; width:42px; height:42px; border-radius:13px; background:linear-gradient(140deg,#252a3b,#151925); border:1px solid #343b50; color:#fff; box-shadow:0 8px 30px #0004; }
+    .logo svg { width:31px; height:31px; }
     .status { color:#a7f3cf; border:1px solid #285747; background:#10271f; padding:6px 10px; border-radius:999px; font-size:12px; }
     .hero { padding:28px 0 30px; }
     .eyebrow { color:var(--cyan); font-size:11px; letter-spacing:.22em; font-weight:800; }
@@ -39,7 +40,12 @@
 <body>
   <main class="shell">
     <header>
-      <div class="brand"><div class="logo" aria-hidden="true">Z</div><span>ZENITH</span></div>
+      <div class="brand"><div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img" aria-label="" focusable="false">
+            <path d="M5 9H20V14H15V29H10V14H5Z" fill="currentColor"/>
+            <path d="M43 9H28V14H33V29H38V14H43Z" fill="currentColor"/>
+          </svg>
+        </div><span>ZENITH</span></div>
       <span class="status">● Prototype</span>
     </header>
     <section class="hero">
