@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZENITH Client — Design Preview</title>
+<style>
+:root{color-scheme:dark;--bg:#101114;--panel:#1b1c21;--line:#303036;--accent:#f9f2af;--text:#f5f5f6;--muted:#a5a5ad}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#29291f 0,transparent 48%),var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.app{width:min(100%,480px);margin:0 auto;min-height:100vh;padding:24px 20px 30px}
+header{display:flex;align-items:center;gap:12px;padding:4px 0 22px;border-bottom:1px solid var(--line)}
+.logo{width:46px;height:46px;border-radius:13px;background:var(--accent);display:grid;place-items:center;color:var(--bg);font-size:25px;font-weight:900;clip-path:polygon(50% 0,100% 100%,67% 82%,50% 93%,33% 82%,0 100%)}
+.brand{font-size:19px;font-weight:850;letter-spacing:2px}.subbrand{font-size:10px;letter-spacing:3px;color:var(--muted)}.gear{margin-left:auto;border:1px solid var(--line);border-radius:12px;padding:10px;color:var(--muted)}
+.eyebrow{margin-top:28px;font-size:10px;letter-spacing:2.4px;color:var(--muted)}h1{font-size:34px;line-height:1.08;margin:8px 0 8px;letter-spacing:-1px}p{margin:0;color:var(--muted)}
+.launch{display:flex;align-items:center;gap:13px;margin-top:25px;background:var(--accent);color:#101114;border-radius:18px;padding:18px;text-decoration:none;box-shadow:0 10px 32px #f9f2af12}
+.gameicon{display:grid;place-items:center;background:#10111412;width:45px;height:45px;border-radius:13px;font-size:23px}.launchtext{flex:1}.launch strong{display:block;font-size:16px}.launch small{display:block;color:#4b4b40;margin-top:2px}.arrow{font-size:24px}
+.sectionhead{display:flex;align-items:center;justify-content:space-between;margin:29px 0 12px;font-size:12px;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile{background:linear-gradient(145deg,#202127,var(--panel));border:1px solid var(--line);border-radius:17px;padding:17px;min-height:130px}.tile .ico{color:var(--accent);font-size:23px}.tile h2{font-size:15px;margin:13px 0 4px}.tile p{font-size:12px}
+.status{display:flex;align-items:center;gap:8px;margin-top:20px;padding:13px 14px;border:1px solid var(--line);border-radius:14px;color:var(--muted);font-size:12px}.dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+nav{display:flex;justify-content:space-around;margin-top:24px;padding:13px 4px;border-top:1px solid var(--line);color:var(--muted);font-size:11px}nav span:first-child{color:var(--accent)}
+footer{text-align:center;color:#696970;font-size:9px;letter-spacing:2px;margin-top:16px}
+@media(min-width:600px){.app{margin-top:24px;margin-bottom:24px;min-height:0;border:1px solid var(--line);border-radius:28px;background:#101114;box-shadow:0 25px 90px #0008}}
+</style>
+</head>
+<body>
+<main class="app">
+<header><div class="logo" aria-label="Zenith logo">Z</div><div><div class="brand">ZENITH</div><div class="subbrand">CLIENT</div></div><div class="gear" aria-label="Einstellungen">⚙</div></header>
+<div class="eyebrow">YOUR WORLD. YOUR RULES.</div>
+<h1>Welcome back.</h1><p>Ready to play your game?</p>
+<a class="launch" href="#" onclick="alert('Demo: Später öffnet dieser Button Minecraft Bedrock, sofern es installiert ist.');return false"><span class="gameicon">▣</span><span class="launchtext"><strong>Minecraft Bedrock</strong><small>Your game. Your experience.</small></span><span class="arrow">↗</span></a>
+<div class="sectionhead"><span>Your workspace</span><span>01 / 04</span></div>
+<section class="grid" aria-label="Hauptmenü">
+<article class="tile"><div class="ico">◈</div><h2>Profiles</h2><p>Your configurations</p></article>
+<article class="tile"><div class="ico">▦</div><h2>Library</h2><p>Your add-ons</p></article>
+<article class="tile"><div class="ico">◉</div><h2>Performance</h2><p>Device information</p></article>
+<article class="tile"><div class="ico">☷</div><h2>Appearance</h2><p>Make it yours</p></article>
+</section>
+<div class="status"><span class="dot"></span><span>DESIGN PREVIEW · App functions are not connected yet</span></div>
+<nav aria-label="Navigation"><span>⌂ &nbsp; Home</span><span>◈ &nbsp; Library</span><span>◉ &nbsp; Stats</span><span>⚙ &nbsp; Settings</span></nav>
+<footer>ZENITH CLIENT · BEDROCK EDITION</footer>
+</main>
+</body>
+</html>
