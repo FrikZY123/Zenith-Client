@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#090b12">
+  <meta name="description" content="Zenith Client interface prototype">
+  <link rel="manifest" href="./manifest.json">
   <title>Zenith Client</title>
   <style>
     :root { color-scheme: dark; --bg:#090b12; --panel:#111521; --line:#252c3d; --text:#f3f5ff; --muted:#929bb2; --accent:#8b7cff; --cyan:#5ee7f5; }
@@ -67,6 +69,11 @@
     document.getElementById('aboutButton').addEventListener('click', () => {
       notice.textContent = 'Zenith is currently a front-end prototype. Game integration and real settings have not been implemented.';
     });
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+    }
   </script>
 </body>
 </html>
