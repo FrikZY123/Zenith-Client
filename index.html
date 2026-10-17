@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b12">
+  <title>Zenith Client</title>
+  <style>
+    :root { color-scheme: dark; --bg:#090b12; --panel:#111521; --line:#252c3d; --text:#f3f5ff; --muted:#929bb2; --accent:#8b7cff; --cyan:#5ee7f5; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:radial-gradient(ellipse at 80% 0%,#24204c 0,transparent 42%),var(--bg); color:var(--text); font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif; }
+    .shell { width:min(100% - 32px,900px); margin:0 auto; padding:24px 0 48px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 0 34px; }
+    .brand { display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.12em; }
+    .logo { display:grid; place-items:center; width:42px; height:42px; border-radius:13px; background:linear-gradient(140deg,var(--accent),#4c45a8); box-shadow:0 8px 30px #6e61ff40; font-size:20px; }
+    .status { color:#a7f3cf; border:1px solid #285747; background:#10271f; padding:6px 10px; border-radius:999px; font-size:12px; }
+    .hero { padding:28px 0 30px; }
+    .eyebrow { color:var(--cyan); font-size:11px; letter-spacing:.22em; font-weight:800; }
+    h1 { font-size:clamp(38px,8vw,66px); line-height:1.02; letter-spacing:-.055em; margin:14px 0; }
+    h1 span { color:var(--accent); }
+    .intro { max-width:520px; color:var(--muted); font-size:16px; }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:24px; }
+    button { font:inherit; font-weight:700; padding:12px 17px; border-radius:12px; border:1px solid var(--line); cursor:pointer; color:var(--text); background:#171c2a; }
+    button.primary { background:var(--accent); border-color:transparent; color:white; }
+    button:focus-visible { outline:2px solid var(--cyan); outline-offset:3px; }
+    .section-title { font-size:12px; color:var(--muted); letter-spacing:.16em; margin:18px 0 12px; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .card { border:1px solid var(--line); background:linear-gradient(145deg,#151a29,#10131d); padding:18px; border-radius:17px; min-height:130px; }
+    .card .icon { font-size:22px; margin-bottom:12px; }
+    .card h2 { font-size:16px; margin:0 0 5px; }
+    .card p { margin:0; color:var(--muted); font-size:13px; }
+    .notice { margin-top:14px; padding:14px 16px; border:1px solid #34304f; border-radius:14px; color:#c5c0ff; background:#151329; font-size:13px; }
+    footer { margin-top:28px; color:#707a92; font-size:12px; text-align:center; }
+    @media (max-width:520px) { .shell { width:min(100% - 24px,900px); padding-top:14px; } header { padding-bottom:22px; } .grid { grid-template-columns:1fr; } .card { min-height:auto; } .hero { padding-top:18px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div class="brand"><div class="logo" aria-hidden="true">Z</div><span>ZENITH</span></div>
+      <span class="status">● Prototype</span>
+    </header>
+    <section class="hero">
+      <div class="eyebrow">YOUR GAME. YOUR RULES.</div>
+      <h1>Welcome to<br><span>Zenith Client.</span></h1>
+      <p class="intro">A home for your Minecraft Bedrock setup. Choose a section below to explore this early interface prototype.</p>
+      <div class="actions">
+        <button class="primary" id="startButton">Explore Zenith ↗</button>
+        <button id="aboutButton">About this prototype</button>
+      </div>
+    </section>
+    <div class="section-title">YOUR WORKSPACE</div>
+    <section class="grid" aria-label="Zenith sections">
+      <article class="card"><div class="icon" aria-hidden="true">▣</div><h2>Profiles</h2><p>Keep different play setups organized.</p></article>
+      <article class="card"><div class="icon" aria-hidden="true">▤</div><h2>Library</h2><p>A future home for your available content.</p></article>
+      <article class="card"><div class="icon" aria-hidden="true">◈</div><h2>Performance</h2><p>Explore configuration ideas for smoother play.</p></article>
+      <article class="card"><div class="icon" aria-hidden="true">⚙</div><h2>Appearance</h2><p>Personalize the look of your workspace.</p></article>
+    </section>
+    <div class="notice" id="notice" role="status">This is a visual prototype. It does not modify Minecraft or install a client.</div>
+    <footer>ZENITH CLIENT · EARLY DESIGN PREVIEW</footer>
+  </main>
+  <script>
+    const notice = document.getElementById('notice');
+    document.getElementById('startButton').addEventListener('click', () => {
+      notice.textContent = 'Welcome to Zenith. The interface is working; the sections are design placeholders for now.';
+    });
+    document.getElementById('aboutButton').addEventListener('click', () => {
+      notice.textContent = 'Zenith is currently a front-end prototype. Game integration and real settings have not been implemented.';
+    });
+  </script>
+</body>
+</html>
