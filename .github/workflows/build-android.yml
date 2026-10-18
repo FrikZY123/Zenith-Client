@@ -55,7 +55,7 @@ jobs:
       - name: Generate Android project
         run: |
           npx cap add android
-          npx cap sync android\n          for spec in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do\n            density="${spec%%:*}"\n            size="${spec##*:}"\n            mkdir -p "android/app/src/main/res/mipmap-${density}"\n            convert -background none icon.svg -resize "${size}x${size}" "android/app/src/main/res/mipmap-${density}/ic_launcher.png"\n          done\n          mkdir -p android/app/src/main/res/drawable\n          convert -background "#101114" icon.svg -resize 432x432 android/app/src/main/res/drawable/ic_launcher_foreground.png
+          npx cap sync android\n          for spec in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do\n            density="${spec%%:*}"\n            size="${spec##*:}"\n            mkdir -p "android/app/src/main/res/mipmap-${density}"\n            convert -background none icon.svg -resize "${size}x${size}" "android/app/src/main/res/mipmap-${density}/ic_launcher.png"\n            convert -background none icon.svg -resize "${size}x${size}" "android/app/src/main/res/mipmap-${density}/ic_launcher_foreground.png"\n          done\n
 
       - name: Build debug APK
         working-directory: android
