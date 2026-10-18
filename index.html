@@ -41,6 +41,20 @@
     .notice { margin-top:14px; padding:14px 16px; border:1px solid #34304f; border-radius:14px; color:#c5c0ff; background:#151329; font-size:13px; }
     footer { margin-top:28px; color:#707a92; font-size:12px; text-align:center; }
     @media (max-width:520px) { .shell { width:min(100% - 24px,900px); padding-top:14px; } header { padding-bottom:22px; } .grid { grid-template-columns:1fr; } .card { min-height:auto; } .hero { padding-top:18px; } }
+
+    .header-tools{display:flex;align-items:center;gap:8px}.menu-wrap{position:relative}
+    .icon-button{width:42px;height:42px;padding:0;display:grid;place-items:center;font-size:19px;border-radius:13px;background:#151925;border-color:#343b4f}
+    .dropdown{position:absolute;z-index:20;right:0;top:50px;width:220px;padding:8px;border:1px solid var(--line);border-radius:15px;background:#121725;box-shadow:0 18px 50px #0008}
+    .dropdown-title{padding:9px 10px;color:#FFF2B2;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+    button.dropdown-item{display:block;width:100%;text-align:left;border:0;background:transparent;padding:10px;border-radius:9px;font-size:13px}
+    button.dropdown-item:hover{background:#252b3c}[hidden]{display:none!important}
+    .panel{margin-top:16px;padding:20px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,#151a29,#10131d)}
+    .panel h2{margin:0 0 7px;font-size:21px}.panel p{color:var(--muted);font-size:14px}
+    .panel-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .panel-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+    .account-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+    .provider{color:var(--muted);font-size:12px}.small-button{padding:8px 11px;font-size:12px}
+    @media(max-width:520px){.header-tools{gap:5px}.status{display:none}.dropdown{width:min(220px,calc(100vw - 32px))}}
   </style>
 </head>
 <body>
@@ -52,7 +66,18 @@
             <path d="M43 9H28V14H33V29H38V14H43Z" fill="currentColor"/>
           </svg>
         </div><span>ZENITH</span></div>
-      <span class="status">● Prototype</span>
+      <div class="header-tools">
+  <div class="menu-wrap"><button class="icon-button" id="accountMenuButton" aria-label="Minecraft-Konto" aria-expanded="false">▣</button>
+    <div class="dropdown" id="accountDropdown" hidden><div class="dropdown-title">Minecraft-Konto</div>
+      <button class="dropdown-item" data-action="accounts">Konten & Anmeldung</button><button class="dropdown-item" data-action="switch">Account wechseln</button><button class="dropdown-item" data-action="add">＋ Konto hinzufügen</button>
+    </div>
+  </div>
+  <div class="menu-wrap"><button class="icon-button" id="settingsMenuButton" aria-label="Einstellungen" aria-expanded="false">⚙</button>
+    <div class="dropdown" id="settingsDropdown" hidden><div class="dropdown-title">Einstellungen</div>
+      <button class="dropdown-item" data-action="appearance">Darstellung</button><button class="dropdown-item" data-action="privacy">Datenschutz & Sicherheit</button><button class="dropdown-item" data-action="about">Über Zenith</button>
+    </div>
+  </div><span class="status">● Prototype</span>
+</div>
     </header>
     <section class="hero">
       <div class="eyebrow">YOUR GAME. YOUR RULES.</div>
@@ -71,39 +96,59 @@
       <button class="card section-card" data-section="Performance" type="button"><div class="icon" aria-hidden="true">◈</div><h2>Performance</h2><p>Explore performance settings.</p></button>
       <button class="card section-card" data-section="Appearance" type="button"><div class="icon" aria-hidden="true">⚙</div><h2>Appearance</h2><p>Personalize your workspace.</p></button>
     </section>
+    <section class="panel" id="contentPanel" hidden aria-live="polite"></section>
     <div class="notice" id="notice" role="status" aria-live="polite">Zenith is ready. Choose a section or try one of the actions above.</div>
     <footer>ZENITH CLIENT · EARLY DESIGN PREVIEW</footer>
   </main>
   <script>
-    const notice = document.getElementById('notice');
-    const messages = {
-      Profiles: 'Profiles: profile management is planned. No game settings have been changed.',
-      Library: 'Library: this section will hold compatible content once the library feature is built.',
-      Performance: 'Performance: diagnostic and optimization controls are not connected yet.',
-      Appearance: 'Appearance: use the button below to switch between dark and light mode.'
-    };
-    document.getElementById('startButton').addEventListener('click', () => {
-      notice.textContent = 'Minecraft Bedrock launch is not connected yet. Next step: implement and test Android app launching safely.';
+    const notice = document.getElementById("notice");
+    const panel = document.getElementById("contentPanel");
+    const accountMenu = document.getElementById("accountDropdown");
+    const settingsMenu = document.getElementById("settingsDropdown");
+    let accounts = [];
+    try { accounts = JSON.parse(localStorage.getItem("zenith.accounts") || "[]"); if (!Array.isArray(accounts)) accounts = []; } catch (_) {}
+    let activeId = localStorage.getItem("zenith.activeAccount") || "";
+    function save() { try { localStorage.setItem("zenith.accounts", JSON.stringify(accounts)); localStorage.setItem("zenith.activeAccount", activeId); } catch (_) {} }
+    function closeMenus() { accountMenu.hidden = true; settingsMenu.hidden = true; document.getElementById("accountMenuButton").setAttribute("aria-expanded","false"); document.getElementById("settingsMenuButton").setAttribute("aria-expanded","false"); }
+    function toggleMenu(menu, button) { const open = menu.hidden; closeMenus(); menu.hidden = !open; button.setAttribute("aria-expanded", String(open)); }
+    function showPanel(title, content) {
+      panel.hidden = false;
+      panel.innerHTML = '<div class="panel-top"><h2>' + title + '</h2><button class="small-button" id="closePanel">Schließen ×</button></div>' + content;
+      document.getElementById("closePanel").addEventListener("click", () => panel.hidden = true);
+      panel.scrollIntoView({behavior:"smooth",block:"nearest"});
+    }
+    function accountPanel() {
+      const rows = accounts.length ? accounts.map((a,i) => '<div class="account-row"><div><strong>' + a.name.replace(/[&<>]/g, "") + '</strong><div class="provider">' + a.provider + (a.id === activeId ? ' · Aktiv' : '') + '</div></div><button class="small-button" data-pick="' + i + '">' + (a.id === activeId ? 'Aktiv' : 'Wechseln') + '</button></div>').join("") : '<p>Noch kein Konto in dieser Oberfläche gespeichert.</p>';
+      showPanel("Konten & Anmeldung", '<p>Verwalte hier die Profile in der Oberfläche. Die echte Anmeldung wird später über den offiziellen Anbieter-Login verbunden.</p><div class="panel-actions"><button id="googleLogin">Mit Google fortfahren</button><button id="microsoftLogin">Mit Microsoft fortfahren</button></div><div class="notice" id="authHint">Anmeldung ist noch nicht eingerichtet. Diese Schaltflächen fragen kein Passwort ab.</div><h3>Gespeicherte Profile</h3>' + rows + '<div class="panel-actions"><button id="addLocal">＋ Testprofil hinzufügen</button></div>');
+      document.getElementById("googleLogin").onclick = () => document.getElementById("authHint").textContent = "Google OAuth ist noch nicht eingerichtet. Hierfür brauchen wir eine registrierte App und einen offiziellen Login-Ablauf.";
+      document.getElementById("microsoftLogin").onclick = () => document.getElementById("authHint").textContent = "Minecraft-Konten verwenden Microsoft. Der offizielle Microsoft-/Xbox-Login muss noch eingerichtet werden.";
+      document.getElementById("addLocal").onclick = () => { const name = prompt("Name für ein lokales Testprofil:"); if (!name || !name.trim()) return; const a = {id:"local-" + Date.now(),name:name.trim().replace(/[&<>]/g,""),provider:"Lokales Testprofil"}; accounts.push(a); activeId = a.id; save(); accountPanel(); notice.textContent = "Testprofil gespeichert. Das ist noch keine echte Minecraft-Anmeldung."; };
+      panel.querySelectorAll("[data-pick]").forEach(b => b.onclick = () => { const a = accounts[Number(b.dataset.pick)]; if (!a) return; activeId = a.id; save(); accountPanel(); notice.textContent = "Aktives Profil: " + a.name + ". Ein echtes Minecraft-Konto wird später über Microsoft verbunden."; });
+    }
+    function setTheme(light) { document.body.classList.toggle("light-mode", light); try { localStorage.setItem("zenith.lightMode", String(light)); } catch (_) {} notice.textContent = "Darstellung geändert: " + (light ? "Hellmodus" : "Dunkelmodus") + "."; }
+    try { if (localStorage.getItem("zenith.lightMode") === "true") document.body.classList.add("light-mode"); } catch (_) {}
+    function appearancePanel() { showPanel("Darstellung", '<p>Wähle die Darstellung für Zenith.</p><div class="panel-actions"><button id="darkMode">Dunkel</button><button id="lightMode">Hell</button></div>'); document.getElementById("darkMode").onclick = () => setTheme(false); document.getElementById("lightMode").onclick = () => setTheme(true); }
+    document.getElementById("accountMenuButton").onclick = () => toggleMenu(accountMenu, document.getElementById("accountMenuButton"));
+    document.getElementById("settingsMenuButton").onclick = () => toggleMenu(settingsMenu, document.getElementById("settingsMenuButton"));
+    document.getElementById("startButton").onclick = () => { if (!activeId) { notice.textContent = "Wähle zuerst ein Profil oder füge ein Konto hinzu. Minecraft selbst ist noch nicht mit Android verbunden."; accountPanel(); return; } const a = accounts.find(x => x.id === activeId); notice.textContent = "Profil " + (a ? a.name : "ausgewählt") + " ist aktiv. Die Android-Verknüpfung zum Minecraft-Start kommt als nächster Schritt."; };
+    document.getElementById("loginButton").onclick = accountPanel;
+    document.getElementById("aboutButton").onclick = () => showPanel("Über Zenith", "<p>Zenith Client ist ein früher Android-Prototyp. Konten und Darstellung funktionieren lokal. Google-/Microsoft-Anmeldung und Minecraft-Start sind noch nicht integriert.</p><p class='provider'>Version 0.1 · UI-Prototyp</p>");
+    document.querySelectorAll("[data-section]").forEach(b => b.onclick = () => {
+      const section = b.dataset.section;
+      if (section === "Appearance") appearancePanel();
+      else if (section === "Profiles") accountPanel();
+      else if (section === "Library") showPanel("Library", "<p>Hier werden später kompatible Inhalte angezeigt. Externe Downloads sind noch nicht verbunden.</p>");
+      else if (section === "Performance") showPanel("Performance", "<p>Hier kommen später Diagnose- und Leistungsoptionen hin. Aktuell werden keine Geräteeinstellungen verändert.</p>");
     });
-    document.getElementById('loginButton').addEventListener('click', () => {
-      notice.textContent = 'Microsoft sign-in is not configured yet. We must set up the official OAuth flow before asking you to sign in. Never enter your Microsoft password directly into Zenith.';
+    document.querySelectorAll("[data-action]").forEach(b => b.onclick = () => {
+      const action = b.dataset.action; closeMenus();
+      if (action === "accounts" || action === "switch" || action === "add") accountPanel();
+      if (action === "add") setTimeout(() => document.getElementById("addLocal")?.click(), 0);
+      if (action === "appearance") appearancePanel();
+      if (action === "privacy") showPanel("Datenschutz & Sicherheit", "<p>Zenith fragt hier keine Passwörter ab. Später wird die Anmeldung über den offiziellen Anbieter-Login eingebunden.</p>");
+      if (action === "about") showPanel("Über Zenith", "<p>Früher Android-Prototyp · Version 0.1. Anmeldung und Minecraft-Start sind noch nicht verbunden.</p>");
     });
-    document.getElementById('aboutButton').addEventListener('click', () => {
-      notice.textContent = 'Zenith Client is an early Android interface. Buttons now respond, but Microsoft authentication and Minecraft integration still need implementation.';
-    });
-    document.querySelectorAll('[data-section]').forEach(button => {
-      button.addEventListener('click', () => {
-        const section = button.dataset.section;
-        if (section === 'Appearance') {
-          document.body.classList.toggle('light-mode');
-          notice.textContent = document.body.classList.contains('light-mode')
-            ? 'Appearance updated: light mode is on. Tap Appearance again to return to dark mode.'
-            : 'Appearance updated: dark mode is on.';
-        } else {
-          notice.textContent = messages[section];
-        }
-      });
-    });
+    document.addEventListener("click", e => { if (!e.target.closest(".menu-wrap")) closeMenus(); });
   </script>
   <script>
     if ('serviceWorker' in navigator) {
