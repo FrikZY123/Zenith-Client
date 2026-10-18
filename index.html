@@ -52,6 +52,9 @@
     .panel h2{margin:0 0 7px;font-size:21px}.panel p{color:var(--muted);font-size:14px}
     .panel-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
     .panel-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+    .setting-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)}.setting-row:last-child{border-bottom:0}.setting-row small{display:block;color:var(--muted);font-size:12px}.switch{width:48px;min-width:48px;padding:5px;border-radius:999px;background:#292f40!important}.switch[aria-pressed="true"]{background:#596044!important;border-color:var(--accent)}.switch-dot{display:block;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .15s}.switch[aria-pressed="true"] .switch-dot{transform:translateX(19px)}
+    body.compact-mode .card{min-height:95px;padding:13px}body.compact-mode .hero{padding-top:12px;padding-bottom:16px}body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}
+    body.high-contrast{--line:#70788b;--muted:#c6ccda}
     .account-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
     .provider{color:var(--muted);font-size:12px}.small-button{padding:8px 11px;font-size:12px}
     @media(max-width:520px){.header-tools{gap:5px}.status{display:none}.dropdown{width:min(220px,calc(100vw - 32px))}}
@@ -115,30 +118,50 @@
       panel.hidden = false;
       panel.innerHTML = '<div class="panel-top"><h2>' + title + '</h2><button class="small-button" id="closePanel">Schließen ×</button></div>' + content;
       document.getElementById("closePanel").addEventListener("click", () => panel.hidden = true);
-      panel.scrollIntoView({behavior:"smooth",block:"nearest"});
+      // Panels replace the current workspace in place; navigation never jumps down the page.
     }
     function accountPanel() {
       const rows = accounts.length ? accounts.map((a,i) => '<div class="account-row"><div><strong>' + a.name.replace(/[&<>]/g, "") + '</strong><div class="provider">' + a.provider + (a.id === activeId ? ' · Aktiv' : '') + '</div></div><button class="small-button" data-pick="' + i + '">' + (a.id === activeId ? 'Aktiv' : 'Wechseln') + '</button></div>').join("") : '<p>Noch kein Konto in dieser Oberfläche gespeichert.</p>';
       showPanel("Konten & Anmeldung", '<p>Verwalte hier die Profile in der Oberfläche. Die echte Anmeldung wird später über den offiziellen Anbieter-Login verbunden.</p><div class="panel-actions"><button id="googleLogin">Mit Google fortfahren</button><button id="microsoftLogin">Mit Microsoft fortfahren</button></div><div class="notice" id="authHint">Anmeldung ist noch nicht eingerichtet. Diese Schaltflächen fragen kein Passwort ab.</div><h3>Gespeicherte Profile</h3>' + rows + '<div class="panel-actions"><button id="addLocal">＋ Testprofil hinzufügen</button></div>');
       document.getElementById("googleLogin").onclick = () => document.getElementById("authHint").textContent = "Google OAuth ist noch nicht eingerichtet. Hierfür brauchen wir eine registrierte App und einen offiziellen Login-Ablauf.";
-      document.getElementById("microsoftLogin").onclick = () => document.getElementById("authHint").textContent = "Minecraft-Konten verwenden Microsoft. Der offizielle Microsoft-/Xbox-Login muss noch eingerichtet werden.";
+      document.getElementById("microsoftLogin").onclick = () => { document.getElementById("authHint").innerHTML = 'Für eine echte Minecraft-Anmeldung braucht Zenith eine registrierte Microsoft-App, die passende Android-Redirect-URI und den offiziellen OAuth-/Xbox-/Minecraft-Tokenablauf. <a href="https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow" target="_blank" rel="noopener noreferrer">Offizielle Microsoft-Dokumentation öffnen</a>. Diese Version nimmt bewusst kein Passwort entgegen und behauptet nicht, dass du angemeldet bist.'; };
       document.getElementById("addLocal").onclick = () => { const name = prompt("Name für ein lokales Testprofil:"); if (!name || !name.trim()) return; const a = {id:"local-" + Date.now(),name:name.trim().replace(/[&<>]/g,""),provider:"Lokales Testprofil"}; accounts.push(a); activeId = a.id; save(); accountPanel(); notice.textContent = "Testprofil gespeichert. Das ist noch keine echte Minecraft-Anmeldung."; };
       panel.querySelectorAll("[data-pick]").forEach(b => b.onclick = () => { const a = accounts[Number(b.dataset.pick)]; if (!a) return; activeId = a.id; save(); accountPanel(); notice.textContent = "Aktives Profil: " + a.name + ". Ein echtes Minecraft-Konto wird später über Microsoft verbunden."; });
     }
     function setTheme(light) { document.body.classList.toggle("light-mode", light); try { localStorage.setItem("zenith.lightMode", String(light)); } catch (_) {} notice.textContent = "Darstellung geändert: " + (light ? "Hellmodus" : "Dunkelmodus") + "."; }
     try { if (localStorage.getItem("zenith.lightMode") === "true") document.body.classList.add("light-mode"); } catch (_) {}
-    function appearancePanel() { showPanel("Darstellung", '<p>Wähle die Darstellung für Zenith.</p><div class="panel-actions"><button id="darkMode">Dunkel</button><button id="lightMode">Hell</button></div>'); document.getElementById("darkMode").onclick = () => setTheme(false); document.getElementById("lightMode").onclick = () => setTheme(true); }
+    function readSetting(key, fallback=false) { try { const v=localStorage.getItem("zenith."+key); return v===null?fallback:v==="true"; } catch (_) { return fallback; } }
+    function applySettings() {
+      document.body.classList.toggle("compact-mode", readSetting("compact"));
+      document.body.classList.toggle("reduce-motion", readSetting("reduceMotion"));
+      document.body.classList.toggle("high-contrast", readSetting("highContrast"));
+      document.body.classList.toggle("light-mode", readSetting("lightMode"));
+    }
+    function settingRow(key, title, description) {
+      const enabled=readSetting(key);
+      return '<div class="setting-row"><div><strong>'+title+'</strong><small>'+description+'</small></div><button class="switch" type="button" data-setting="'+key+'" aria-pressed="'+enabled+'" aria-label="'+title+' umschalten"><span class="switch-dot"></span></button></div>';
+    }
+    function appearancePanel() {
+      showPanel("Darstellung", '<p>Deine Auswahl wird auf diesem Gerät gespeichert.</p>'+settingRow("lightMode","Hellmodus","Helles statt dunkles Farbschema")+settingRow("compact","Kompakte Karten","Weniger Abstand in der Oberfläche")+settingRow("reduceMotion","Bewegungen reduzieren","Übergänge und Scroll-Animationen abschalten")+settingRow("highContrast","Höherer Kontrast","Rahmen und Nebentext deutlicher darstellen"));
+      panel.querySelectorAll("[data-setting]").forEach(btn => btn.onclick=()=>{
+        const key=btn.dataset.setting, next=btn.getAttribute("aria-pressed")!=="true";
+        try { localStorage.setItem("zenith."+key,String(next)); } catch (_) {}
+        applySettings(); btn.setAttribute("aria-pressed",String(next)); notice.textContent="Einstellung gespeichert: "+btn.getAttribute("aria-label").replace(" umschalten","");
+      });
+    }
+    applySettings();
     document.getElementById("accountMenuButton").onclick = () => toggleMenu(accountMenu, document.getElementById("accountMenuButton"));
     document.getElementById("settingsMenuButton").onclick = () => toggleMenu(settingsMenu, document.getElementById("settingsMenuButton"));
     document.getElementById("startButton").onclick = () => { if (!activeId) { notice.textContent = "Wähle zuerst ein Profil oder füge ein Konto hinzu. Minecraft selbst ist noch nicht mit Android verbunden."; accountPanel(); return; } const a = accounts.find(x => x.id === activeId); notice.textContent = "Profil " + (a ? a.name : "ausgewählt") + " ist aktiv. Die Android-Verknüpfung zum Minecraft-Start kommt als nächster Schritt."; };
     document.getElementById("loginButton").onclick = accountPanel;
-    document.getElementById("aboutButton").onclick = () => showPanel("Über Zenith", "<p>Zenith Client ist ein früher Android-Prototyp. Konten und Darstellung funktionieren lokal. Google-/Microsoft-Anmeldung und Minecraft-Start sind noch nicht integriert.</p><p class='provider'>Version 0.1 · UI-Prototyp</p>");
+    document.getElementById("aboutButton").onclick = () => showPanel("Über Zenith", "<p>Zenith Client ist ein Android-Prototyp. Profile und Darstellung werden lokal gespeichert. Die echte Microsoft-/Xbox-/Minecraft-Anmeldung und der native Minecraft-Start benötigen noch die offizielle App-Konfiguration und native Android-Integration.</p><p class='provider'>Version 0.1 · UI-Prototyp</p>");
     document.querySelectorAll("[data-section]").forEach(b => b.onclick = () => {
       const section = b.dataset.section;
       if (section === "Appearance") appearancePanel();
       else if (section === "Profiles") accountPanel();
-      else if (section === "Library") showPanel("Library", "<p>Hier werden später kompatible Inhalte angezeigt. Externe Downloads sind noch nicht verbunden.</p>");
-      else if (section === "Performance") showPanel("Performance", "<p>Hier kommen später Diagnose- und Leistungsoptionen hin. Aktuell werden keine Geräteeinstellungen verändert.</p>");
+      else if (section === "Library") showPanel("Library", "");
+      else if (section === "Performance") showPanel("Performance", '<p>Diese Optionen ändern nur Zeniths Oberfläche. Android- oder Minecraft-Leistungseinstellungen werden nicht heimlich verändert.</p>'+settingRow("compact","Kompakte Oberfläche","Weniger UI-Abstände")+settingRow("reduceMotion","Bewegungen reduzieren","UI-Animationen abschalten")+settingRow("highContrast","Höherer Kontrast","Bessere Lesbarkeit"));
+        if (section === "Performance") panel.querySelectorAll("[data-setting]").forEach(btn=>btn.onclick=()=>{const key=btn.dataset.setting,next=btn.getAttribute("aria-pressed")!=="true";try{localStorage.setItem("zenith."+key,String(next));}catch(_){}applySettings();btn.setAttribute("aria-pressed",String(next));notice.textContent="Einstellung gespeichert.";});
     });
     document.querySelectorAll("[data-action]").forEach(b => b.onclick = () => {
       const action = b.dataset.action; closeMenus();
