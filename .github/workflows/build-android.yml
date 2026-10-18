@@ -102,36 +102,99 @@ jobs:
           import android.graphics.PixelFormat;
           import android.os.IBinder;
           import android.view.Gravity;
+          import android.view.View;
           import android.view.WindowManager;
+          import android.widget.Button;
+          import android.widget.LinearLayout;
           import android.widget.TextView;
+
           public class ZenithOverlayService extends Service {
               private WindowManager windowManager;
-              private TextView label;
+              private View launcherButton;
+              private View menuPanel;
+              private WindowManager.LayoutParams buttonParams;
+              private WindowManager.LayoutParams menuParams;
+
               @Override public IBinder onBind(Intent intent) { return null; }
+
               @Override public void onCreate() {
                   super.onCreate();
                   windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-                  label = new TextView(this);
-                  label.setText("Zenith Client");
-                  label.setTextColor(Color.rgb(255, 214, 45));
-                  label.setTextSize(24);
-                  label.setTypeface(Typeface.DEFAULT, Typeface.BOLD_ITALIC);
-                  label.setShadowLayer(5f, 2f, 2f, Color.BLACK);
-                  label.setGravity(Gravity.CENTER);
-                  label.setRotation(-7f);
-                  label.setPadding(18, 8, 18, 8);
-                  label.setOnClickListener(v -> stopSelf());
-                  WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                      WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT,
-                      WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                      WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+
+                  TextView button = new TextView(this);
+                  button.setText("Z");
+                  button.setTextColor(Color.rgb(255, 214, 45));
+                  button.setTextSize(22);
+                  button.setTypeface(Typeface.DEFAULT, Typeface.BOLD_ITALIC);
+                  button.setGravity(Gravity.CENTER);
+                  button.setBackgroundColor(Color.rgb(34, 29, 58));
+                  button.setElevation(10f);
+                  button.setOnClickListener(v -> toggleMenu());
+                  launcherButton = button;
+
+                  buttonParams = new WindowManager.LayoutParams(
+                      dp(54), dp(54), WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                      WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                       PixelFormat.TRANSLUCENT);
-                  params.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-                  params.y = (int) (getResources().getDisplayMetrics().heightPixels * 0.29f);
-                  windowManager.addView(label, params);
+                  buttonParams.gravity = Gravity.TOP | Gravity.END;
+                  buttonParams.x = dp(16);
+                  buttonParams.y = dp(180);
+                  windowManager.addView(launcherButton, buttonParams);
+                  menuPanel = createMenu();
+                  menuPanel.setVisibility(View.GONE);
+                  menuParams = new WindowManager.LayoutParams(
+                      dp(220), WindowManager.LayoutParams.WRAP_CONTENT,
+                      WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                      WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                      PixelFormat.TRANSLUCENT);
+                  menuParams.gravity = Gravity.TOP | Gravity.END;
+                  menuParams.x = dp(16);
+                  menuParams.y = dp(240);
+                  windowManager.addView(menuPanel, menuParams);
               }
+
+              private int dp(int value) {
+                  return (int) (value * getResources().getDisplayMetrics().density + 0.5f);
+              }
+
+              private View createMenu() {
+                  LinearLayout panel = new LinearLayout(this);
+                  panel.setOrientation(LinearLayout.VERTICAL);
+                  panel.setPadding(dp(14), dp(12), dp(14), dp(12));
+                  panel.setBackgroundColor(Color.rgb(25, 23, 40));
+                  panel.setElevation(12f);
+
+                  TextView title = new TextView(this);
+                  title.setText("ZENITH CLIENT");
+                  title.setTextColor(Color.rgb(255, 214, 45));
+                  title.setTextSize(16);
+                  title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+                  panel.addView(title);
+
+                  TextView test = new TextView(this);
+                  test.setText("Test");
+                  test.setTextColor(Color.WHITE);
+                  test.setTextSize(18);
+                  test.setPadding(0, dp(16), 0, dp(16));
+                  panel.addView(test);
+
+                  Button close = new Button(this);
+                  close.setText("Schließen");
+                  close.setOnClickListener(v -> toggleMenu());
+                  panel.addView(close);
+                  return panel;
+              }
+
+              private void toggleMenu() {
+                  if (menuPanel == null) return;
+                  menuPanel.setVisibility(menuPanel.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+              }
+
               @Override public void onDestroy() {
-                  if (windowManager != null && label != null) { try { windowManager.removeView(label); } catch (Exception ignored) { } }
+                  if (windowManager != null) {
+                      if (menuPanel != null) try { windowManager.removeView(menuPanel); } catch (Exception ignored) { }
+                      if (launcherButton != null) try { windowManager.removeView(launcherButton); } catch (Exception ignored) { }
+                  }
                   super.onDestroy();
               }
           }
