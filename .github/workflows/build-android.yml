@@ -66,40 +66,82 @@ jobs:
           mkdir -p android/app/src/main/java/com/zenith/client
           cat > android/app/src/main/java/com/zenith/client/MinecraftLauncherPlugin.java <<'JAVA'
           package com.zenith.client;
-
           import android.content.Intent;
-          import com.getcapacitor.JSObject;
+          import android.net.Uri;
+          import android.provider.Settings;
           import com.getcapacitor.Plugin;
           import com.getcapacitor.PluginCall;
           import com.getcapacitor.PluginMethod;
           import com.getcapacitor.annotation.CapacitorPlugin;
-
           @CapacitorPlugin(name = "MinecraftLauncher")
           public class MinecraftLauncherPlugin extends Plugin {
               @PluginMethod
               public void launch(PluginCall call) {
-                  Intent intent = getContext().getPackageManager().getLaunchIntentForPackage("com.mojang.minecraftpe");
-                  if (intent == null) {
-                      call.reject("Minecraft Bedrock ist nicht installiert.");
+                  if (!Settings.canDrawOverlays(getContext())) {
+                      Intent settings = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getContext().getPackageName()));
+                      settings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                      getContext().startActivity(settings);
+                      call.reject("Erlaube Zenith Client das Anzeigen über anderen Apps und tippe danach erneut auf Launch.");
                       return;
                   }
-                  intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                  getContext().startActivity(intent);
-                  JSObject result = new JSObject();
-                  result.put("launched", true);
-                  call.resolve(result);
+                  Intent game = getContext().getPackageManager().getLaunchIntentForPackage("com.mojang.minecraftpe");
+                  if (game == null) { call.reject("Minecraft Bedrock ist nicht installiert."); return; }
+                  getContext().startService(new Intent(getContext(), ZenithOverlayService.class));
+                  game.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                  getContext().startActivity(game);
+                  call.resolve();
+              }
+          }
+          JAVA
+          cat > android/app/src/main/java/com/zenith/client/ZenithOverlayService.java <<'JAVA'
+          package com.zenith.client;
+          import android.app.Service;
+          import android.content.Intent;
+          import android.graphics.Color;
+          import android.graphics.Typeface;
+          import android.graphics.PixelFormat;
+          import android.os.IBinder;
+          import android.view.Gravity;
+          import android.view.WindowManager;
+          import android.widget.TextView;
+          public class ZenithOverlayService extends Service {
+              private WindowManager windowManager;
+              private TextView label;
+              @Override public IBinder onBind(Intent intent) { return null; }
+              @Override public void onCreate() {
+                  super.onCreate();
+                  windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+                  label = new TextView(this);
+                  label.setText("Zenith Client");
+                  label.setTextColor(Color.rgb(255, 214, 45));
+                  label.setTextSize(24);
+                  label.setTypeface(Typeface.DEFAULT, Typeface.BOLD_ITALIC);
+                  label.setShadowLayer(5f, 2f, 2f, Color.BLACK);
+                  label.setGravity(Gravity.CENTER);
+                  label.setRotation(-7f);
+                  label.setPadding(18, 8, 18, 8);
+                  label.setOnClickListener(v -> stopSelf());
+                  WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                      WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT,
+                      WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                      WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                      PixelFormat.TRANSLUCENT);
+                  params.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+                  params.y = (int) (getResources().getDisplayMetrics().heightPixels * 0.29f);
+                  windowManager.addView(label, params);
+              }
+              @Override public void onDestroy() {
+                  if (windowManager != null && label != null) { try { windowManager.removeView(label); } catch (Exception ignored) { } }
+                  super.onDestroy();
               }
           }
           JAVA
           cat > android/app/src/main/java/com/zenith/client/MainActivity.java <<'JAVA'
           package com.zenith.client;
-
           import android.os.Bundle;
           import com.getcapacitor.BridgeActivity;
-
           public class MainActivity extends BridgeActivity {
-              @Override
-              public void onCreate(Bundle savedInstanceState) {
+              @Override public void onCreate(Bundle savedInstanceState) {
                   registerPlugin(MinecraftLauncherPlugin.class);
                   super.onCreate(savedInstanceState);
               }
@@ -114,7 +156,14 @@ jobs:
               end = text.find(">", start)
               if start < 0 or end < 0:
                   raise SystemExit("Android manifest root tag not found")
-              text = text[:end + 1] + chr(10) + '    <queries>' + chr(10) + '        <package android:name="com.mojang.minecraftpe" />' + chr(10) + '    </queries>' + chr(10) + text[end + 1:]
+              text = text[:end + 1] + chr(10) + '    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />' + chr(10) + '    <queries>' + chr(10) + '        <package android:name="com.mojang.minecraftpe" />' + chr(10) + '    </queries>' + chr(10) + text[end + 1:]
+              path.write_text(text)
+          elif "SYSTEM_ALERT_WINDOW" not in text:
+              text = text.replace("<queries>", '    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />' + chr(10) + '    <queries>', 1)
+              path.write_text(text)
+          service = '    <service android:name="com.zenith.client.ZenithOverlayService" android:exported="false" />'
+          if "ZenithOverlayService" not in text:
+              text = text.replace("</application>", service + chr(10) + "</application>", 1)
               path.write_text(text)
           PY
           for spec in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do
