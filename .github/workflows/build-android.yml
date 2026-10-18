@@ -5,7 +5,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'icon.svg'\n      - 'index.html'
+      - 'icon.svg'
+      - 'index.html'
       - 'manifest.json'
       - 'sw.js'
       - 'package.json'
@@ -55,7 +56,15 @@ jobs:
       - name: Generate Android project
         run: |
           npx cap add android
-          npx cap sync android\n          for spec in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do\n            density="${spec%%:*}"\n            size="${spec##*:}"\n            mkdir -p "android/app/src/main/res/mipmap-${density}"\n            convert -background none icon.svg -resize "${size}x${size}" "android/app/src/main/res/mipmap-${density}/ic_launcher.png"\n            convert -background none icon.svg -resize "${size}x${size}" "android/app/src/main/res/mipmap-${density}/ic_launcher_foreground.png"\n          done\n
+          npx cap sync android
+          for spec in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do
+            density="${spec%%:*}"
+            size="${spec##*:}"
+            mkdir -p "android/app/src/main/res/mipmap-${density}"
+            convert -background none icon.svg -resize "${size}x${size}" "android/app/src/main/res/mipmap-${density}/ic_launcher.png"
+            convert -background none icon.svg -resize "${size}x${size}" "android/app/src/main/res/mipmap-${density}/ic_launcher_foreground.png"
+          done
+
 
       - name: Build debug APK
         working-directory: android
