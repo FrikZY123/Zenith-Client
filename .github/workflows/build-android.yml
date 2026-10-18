@@ -109,7 +109,10 @@ jobs:
           path = Path("android/app/src/main/AndroidManifest.xml")
           text = path.read_text()
           if "<queries>" not in text:
-              end = text.find(">")
+              start = text.find("<manifest")
+              end = text.find(">", start)
+              if start < 0 or end < 0:
+                  raise SystemExit("Android manifest root tag not found")
               text = text[:end + 1] + chr(10) + '    <queries>' + chr(10) + '        <package android:name="com.mojang.minecraftpe" />' + chr(10) + '    </queries>' + chr(10) + text[end + 1:]
               path.write_text(text)
           PY
