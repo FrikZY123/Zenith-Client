@@ -26,6 +26,12 @@
     button { font:inherit; font-weight:700; padding:12px 17px; border-radius:12px; border:1px solid var(--line); cursor:pointer; color:var(--text); background:#171c2a; }
     button.primary { background:var(--accent); border-color:transparent; color:white; }
     button:focus-visible { outline:2px solid var(--cyan); outline-offset:3px; }
+    .section-card { text-align:left; width:100%; min-height:130px; color:var(--text); transition:transform .15s,border-color .15s; }
+    .section-card:hover { transform:translateY(-2px); border-color:var(--accent); }
+    .section-card h2 { color:var(--text); }
+    body.light-mode { --bg:#f2f4fa; --panel:#fff; --line:#d6dbea; --text:#171a27; --muted:#555f76; background:radial-gradient(ellipse at 80% 0%,#e3ddff 0,transparent 42%),var(--bg); }
+    body.light-mode .card { background:linear-gradient(145deg,#fff,#edf0f8); }
+    body.light-mode button { background:#fff; color:var(--text); }
     .section-title { font-size:12px; color:var(--muted); letter-spacing:.16em; margin:18px 0 12px; }
     .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
     .card { border:1px solid var(--line); background:linear-gradient(145deg,#151a29,#10131d); padding:18px; border-radius:17px; min-height:130px; }
@@ -53,27 +59,50 @@
       <h1>Welcome to<br><span>Zenith Client.</span></h1>
       <p class="intro">A home for your Minecraft Bedrock setup. Choose a section below to explore this early interface prototype.</p>
       <div class="actions">
-        <button class="primary" id="startButton">Explore Zenith ↗</button>
-        <button id="aboutButton">About this prototype</button>
+        <button class="primary" id="startButton">Start Minecraft ↗</button>
+        <button id="loginButton">Connect Microsoft account</button>
+        <button id="aboutButton">About Zenith</button>
       </div>
     </section>
     <div class="section-title">YOUR WORKSPACE</div>
     <section class="grid" aria-label="Zenith sections">
-      <article class="card"><div class="icon" aria-hidden="true">▣</div><h2>Profiles</h2><p>Keep different play setups organized.</p></article>
-      <article class="card"><div class="icon" aria-hidden="true">▤</div><h2>Library</h2><p>A future home for your available content.</p></article>
-      <article class="card"><div class="icon" aria-hidden="true">◈</div><h2>Performance</h2><p>Explore configuration ideas for smoother play.</p></article>
-      <article class="card"><div class="icon" aria-hidden="true">⚙</div><h2>Appearance</h2><p>Personalize the look of your workspace.</p></article>
+      <button class="card section-card" data-section="Profiles" type="button"><div class="icon" aria-hidden="true">▣</div><h2>Profiles</h2><p>Manage your play profiles.</p></button>
+      <button class="card section-card" data-section="Library" type="button"><div class="icon" aria-hidden="true">▤</div><h2>Library</h2><p>View your available content.</p></button>
+      <button class="card section-card" data-section="Performance" type="button"><div class="icon" aria-hidden="true">◈</div><h2>Performance</h2><p>Explore performance settings.</p></button>
+      <button class="card section-card" data-section="Appearance" type="button"><div class="icon" aria-hidden="true">⚙</div><h2>Appearance</h2><p>Personalize your workspace.</p></button>
     </section>
-    <div class="notice" id="notice" role="status">This is a visual prototype. It does not modify Minecraft or install a client.</div>
+    <div class="notice" id="notice" role="status" aria-live="polite">Zenith is ready. Choose a section or try one of the actions above.</div>
     <footer>ZENITH CLIENT · EARLY DESIGN PREVIEW</footer>
   </main>
   <script>
     const notice = document.getElementById('notice');
+    const messages = {
+      Profiles: 'Profiles: profile management is planned. No game settings have been changed.',
+      Library: 'Library: this section will hold compatible content once the library feature is built.',
+      Performance: 'Performance: diagnostic and optimization controls are not connected yet.',
+      Appearance: 'Appearance: use the button below to switch between dark and light mode.'
+    };
     document.getElementById('startButton').addEventListener('click', () => {
-      notice.textContent = 'Welcome to Zenith. The interface is working; the sections are design placeholders for now.';
+      notice.textContent = 'Minecraft Bedrock launch is not connected yet. Next step: implement and test Android app launching safely.';
+    });
+    document.getElementById('loginButton').addEventListener('click', () => {
+      notice.textContent = 'Microsoft sign-in is not configured yet. We must set up the official OAuth flow before asking you to sign in. Never enter your Microsoft password directly into Zenith.';
     });
     document.getElementById('aboutButton').addEventListener('click', () => {
-      notice.textContent = 'Zenith is currently a front-end prototype. Game integration and real settings have not been implemented.';
+      notice.textContent = 'Zenith Client is an early Android interface. Buttons now respond, but Microsoft authentication and Minecraft integration still need implementation.';
+    });
+    document.querySelectorAll('[data-section]').forEach(button => {
+      button.addEventListener('click', () => {
+        const section = button.dataset.section;
+        if (section === 'Appearance') {
+          document.body.classList.toggle('light-mode');
+          notice.textContent = document.body.classList.contains('light-mode')
+            ? 'Appearance updated: light mode is on. Tap Appearance again to return to dark mode.'
+            : 'Appearance updated: dark mode is on.';
+        } else {
+          notice.textContent = messages[section];
+        }
+      });
     });
   </script>
   <script>
