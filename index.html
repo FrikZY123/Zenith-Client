@@ -1,107 +1,42 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090b12">
-  <meta name="description" content="Zenith Client für Minecraft Bedrock">
-  <link rel="manifest" href="./manifest.json">
-  <title>Zenith Client</title>
-  <style>
-    :root{color-scheme:dark;--bg:#090b12;--sidebar:#0d1019;--panel:#121725;--panel2:#171d2c;--line:#272e40;--text:#f3f5ff;--muted:#929bb2;--accent:#fff2b2;--accentText:#171715;--purple:#a79bff}
-    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 80% 0%,#24204c 0,transparent 42%),var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
-    button,input{font:inherit}button{cursor:pointer;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:10px 13px;font-weight:650}button:focus-visible,input:focus-visible{outline:2px solid var(--purple);outline-offset:3px}button:hover{border-color:#5a6179}button.primary{background:var(--accent);color:var(--accentText);border-color:transparent}button:disabled{opacity:.48;cursor:not-allowed}
-    .app{min-height:100vh}.sidebar{position:fixed;inset:0 auto 0 0;width:252px;padding:20px 14px 14px;background:linear-gradient(180deg,#0e111b,#0b0e16);border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:5}
-    .brand{display:flex;align-items:center;gap:11px;padding:3px 9px 23px;font-weight:850;letter-spacing:.14em}.logo{width:37px;height:37px;border:1px solid #514c39;border-radius:12px;display:grid;place-items:center;color:var(--accent);background:linear-gradient(140deg,#252a3b,#151925)}.logo svg{width:28px;height:28px}
-    .profile{display:flex;align-items:center;gap:10px;text-align:left;width:100%;padding:10px;margin-bottom:21px;background:#141927;border-color:#282f41}.avatar{width:39px;height:39px;flex:0 0 39px;display:grid;place-items:center;border-radius:50%;background:#27233e;border:1px solid #4a426d;color:#c9c1ff;font-size:19px}.profile-copy{min-width:0;flex:1}.profile-copy strong,.profile-copy small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.profile-copy small{color:var(--muted);font-size:11px;font-weight:500}.chevron{color:var(--muted)}
-    .nav-label{font-size:10px;letter-spacing:.16em;color:#727c94;font-weight:800;padding:0 12px 8px}.nav{display:grid;gap:5px}.nav button{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;text-align:left;background:transparent;border-color:transparent;color:#aeb6ca;font-weight:650}.nav button .nav-icon{width:20px;text-align:center;font-size:17px}.nav button.active{color:var(--text);background:#242238;border-color:#3b365a}.nav button.active .nav-icon{color:var(--accent)}.sidebar-spacer{flex:1}.sidebar-bottom{border-top:1px solid var(--line);padding-top:12px}.version{font-size:10px;color:#69738b;text-align:center;padding-top:11px;letter-spacing:.06em}
-    .main{margin-left:252px;min-height:100vh;padding:0 34px 44px}.topbar{height:69px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #202638;gap:12px}.crumb{color:var(--muted);font-size:12px}.top-actions{display:flex;align-items:center;gap:9px}.status{font-size:11px;color:#b8f3d5;background:#12271f;border:1px solid #285141;border-radius:999px;padding:5px 9px}.page{max-width:1080px;margin:0 auto;padding-top:31px}.eyebrow{font-size:10px;letter-spacing:.2em;color:var(--accent);font-weight:850}.page h1{font-size:clamp(30px,4vw,44px);line-height:1.1;letter-spacing:-.045em;margin:9px 0 8px}.sub{color:var(--muted);max-width:620px;margin:0}.welcome{padding:22px 0 28px}.welcome h1 span{color:var(--accent)}.section-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:8px 0 13px}.section-head h2{font-size:16px;margin:0}.section-head p{font-size:12px;color:var(--muted);margin:3px 0 0}.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.tile{min-height:124px;border:1px solid var(--line);border-radius:16px;padding:17px;background:linear-gradient(145deg,#161b2a,#10131d)}.tile .tile-icon{font-size:21px;margin-bottom:13px}.tile h3{font-size:14px;margin:0 0 4px}.tile p{font-size:12px;color:var(--muted);margin:0}.surface{border:1px solid var(--line);background:linear-gradient(145deg,#141927,#10131d);border-radius:17px;padding:20px;margin-top:22px}.surface h2{font-size:18px;margin:0 0 5px}.surface>p{color:var(--muted);font-size:13px;margin:0 0 14px}.empty{min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px}.empty-icon{width:60px;height:60px;border:1px solid #393451;border-radius:18px;background:#1b1930;display:grid;place-items:center;color:#c7beff;font-size:25px;margin-bottom:17px}.empty h2{font-size:21px;margin:0 0 8px}.empty p{max-width:420px;color:var(--muted);margin:0 0 18px}.search{width:100%;max-width:520px;background:#0c1019;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px 14px}.field-label{display:block;font-size:12px;color:var(--muted);margin:15px 0 7px}.settings-layout{display:grid;grid-template-columns:190px minmax(0,1fr);gap:18px;margin-top:23px}.settings-nav{display:flex;flex-direction:column;gap:5px}.settings-nav button{text-align:left;background:transparent;border-color:transparent;color:var(--muted)}.settings-nav button.active{background:#242238;border-color:#3b365a;color:var(--text)}.settings-content{min-width:0;border:1px solid var(--line);border-radius:16px;padding:20px;background:#111521}.settings-content h2{font-size:18px;margin:0 0 5px}.settings-content>p{color:var(--muted);font-size:12px;margin:0 0 15px}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 0;border-bottom:1px solid var(--line)}.setting-row:last-child{border-bottom:0}.setting-row strong{display:block;font-size:13px}.setting-row small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.switch{width:45px;min-width:45px;padding:4px;border-radius:999px;background:#292f40}.switch[aria-pressed=true]{background:#686044;border-color:var(--accent)}.switch-dot{display:block;width:17px;height:17px;border-radius:50%;background:#fff;transition:transform .15s}.switch[aria-pressed=true] .switch-dot{transform:translateX(17px)}.notice{margin-top:18px;padding:12px 14px;border:1px solid #34304f;border-radius:12px;color:#c5c0ff;background:#151329;font-size:12px}.hidden{display:none!important}.modal-backdrop{position:fixed;inset:0;background:#05060bc9;display:grid;place-items:center;padding:18px;z-index:20}.modal{width:min(100%,460px);border:1px solid #343b51;border-radius:19px;background:#111622;box-shadow:0 25px 90px #0009;padding:23px}.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.modal h2{font-size:21px;margin:0}.modal p{color:var(--muted);font-size:13px}.modal-actions{display:grid;gap:9px;margin-top:18px}.modal-actions button{width:100%;text-align:left;padding:13px}.modal-actions button span{display:block;color:var(--muted);font-size:11px;font-weight:400;margin-top:2px}.disclaimer{font-size:11px!important;border-top:1px solid var(--line);padding-top:13px;margin-top:17px}.light-mode{--bg:#f2f4fa;--sidebar:#fff;--panel:#fff;--panel2:#fff;--line:#d6dbea;--text:#171a27;--muted:#555f76;--accent:#5145b7;--accentText:#fff;background:#f2f4fa;color:var(--text)}body.light-mode .sidebar,body.light-mode .settings-content,body.light-mode .tile,body.light-mode .surface,body.light-mode .modal{background:#fff}body.light-mode .profile,body.light-mode .settings-nav button.active,body.light-mode .nav button.active{background:#eeedfb}body.light-mode .search{background:#f8f9fc;color:var(--text)}body.compact-mode .tile{min-height:95px;padding:13px}body.high-contrast{--line:#70788b;--muted:#c6ccda}body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}
-    /* Modrinth-inspired layout, recolored for Zenith: midnight navy, violet and warm gold. */
-    :root{--bg:#0a0c14;--sidebar:#0e111c;--panel:#141a29;--panel2:#1a2132;--line:#2b3348;--text:#f3f4ff;--muted:#a0a8c0;--accent:#e6d8ff;--accentText:#201633;--purple:#a99aff}
-    body{background:radial-gradient(ellipse at 78% -10%,#28204a 0,transparent 38%),var(--bg)}
-    button{border-radius:9px;border-bottom-width:1px;box-shadow:none;transition:background .15s,border-color .15s,transform .15s}
-    button:hover{transform:translateY(-1px)}
-    button.primary{background:#c4b5fd;color:#171326;border-color:#c4b5fd;text-shadow:none}
-    .sidebar{background:linear-gradient(180deg,#101421,#0c0f18);border-right-color:#292f43}
-    .brand{letter-spacing:.02em}.logo{border-radius:11px;background:#211d38;border-color:#4b3e76;color:#d9ccff}
-    .profile,.tile,.surface,.settings-content,.modal{border-radius:15px;background:linear-gradient(145deg,#171d2d,#121725);border-color:#2b3348}
-    .nav button.active,.settings-nav button.active{border-radius:9px;background:#27223f;border-color:#4c4074}
-    .eyebrow,.welcome h1 span{color:#c5b5ff}.empty-icon{border-radius:13px;background:#24203b;border-color:#4a3e72;color:#d4c8ff}
-    .status{color:#ded6ff;background:#25203c;border-color:#463b6a;border-radius:7px}
-    .modal{box-shadow:0 25px 90px #000b;border:1px solid #3a3556}
-    .modal h2{font-size:23px;letter-spacing:-.025em}
-    .modal-actions button{border-radius:10px}
-    .modal-actions button span{color:#aab1c8}
-    .notice{border-radius:10px;color:#e2dcff;background:#211e36;border-color:#4b4071}
-    .login-hero{display:flex;align-items:center;gap:14px;margin:14px 0 18px;padding:15px;border:1px solid #34334f;border-radius:12px;background:linear-gradient(120deg,#25213f,#171c2b)}
-    .login-avatar{width:56px;height:56px;flex:0 0 56px;border-radius:9px;display:grid;place-items:center;background:#8f754d;box-shadow:inset 0 -8px #0002}
-    .login-avatar .head{width:28px;height:31px;background:#c9976b;border:4px solid #8f5c3e;box-shadow:inset 0 -7px #b17b54;position:relative}
-    .login-avatar .head:before{content:"";position:absolute;top:6px;left:2px;width:5px;height:4px;background:#312a25;box-shadow:13px 0 #312a25,4px 10px #8a4b3d}
-    .login-hero strong{display:block;font-size:14px}.login-hero small{display:block;color:var(--muted);margin-top:3px;font-size:12px}
-    body.light-mode{--bg:#f3f4fa;--sidebar:#fff;--panel:#fff;--panel2:#f8f8fc;--line:#dce0ed;--text:#202236;--muted:#59617a;--accent:#5145b7;--accentText:#fff;background:#f3f4fa;color:var(--text)}
-    body.light-mode .sidebar,body.light-mode .settings-content,body.light-mode .tile,body.light-mode .surface,body.light-mode .modal{background:#fff}
-    body.light-mode .profile,body.light-mode .settings-nav button.active,body.light-mode .nav button.active{background:#eeedfb}
-    body.light-mode .login-hero{background:#f4f2ff;border-color:#ddd6fe}
-    @media(max-width:700px){.sidebar{width:76px;padding:14px 8px}.brand{justify-content:center;padding:3px 0 22px}.brand-name,.profile-copy,.chevron,.nav-label,.nav-text,.version{display:none}.profile{justify-content:center;padding:7px 0}.avatar{width:39px}.nav button{justify-content:center;padding:12px 4px}.nav button .nav-icon{font-size:20px}.main{margin-left:76px;padding:0 16px 30px}.topbar{height:60px}.status{display:none}.page{padding-top:23px}.tiles{grid-template-columns:1fr}.settings-layout{grid-template-columns:1fr}.settings-nav{flex-direction:row;flex-wrap:wrap}.settings-nav button{padding:8px 10px}.welcome{padding-bottom:19px}.surface{padding:15px}.settings-content{padding:15px}}
-    @media(min-width:701px) and (max-width:920px){.sidebar{width:218px}.main{margin-left:218px;padding:0 22px 36px}.settings-layout{grid-template-columns:150px minmax(0,1fr)}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0c14">
+<meta name="description" content="Zenith Client für Minecraft Bedrock">
+<link rel="manifest" href="./manifest.json">
+<title>Zenith Client</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#0a0c14;color:#f4f1ff}
+*{box-sizing:border-box}body{margin:0;min-height:100svh;background:radial-gradient(ellipse at 50% 20%,#292047 0,transparent 55%),#0a0c14;display:grid;place-items:center;padding:24px}
+main{width:min(100%,360px);display:flex;flex-direction:column;align-items:center;text-align:center;gap:20px}
+.logo{width:74px;height:74px;display:grid;place-items:center;border:1px solid #57477c;border-radius:20px;background:linear-gradient(145deg,#28203e,#151522);color:#d6c5ff;box-shadow:0 14px 55px #0005}
+.logo svg{width:52px;height:52px}.brand{font-size:28px;font-weight:900;letter-spacing:.16em;margin:0}.subtitle{font-size:13px;color:#9f9ab8;margin:-12px 0 8px}
+button{width:100%;min-height:62px;border:1px solid #d6c5ff;border-radius:14px;background:linear-gradient(135deg,#d7c8ff,#a995ed);color:#171224;font-size:16px;font-weight:900;letter-spacing:.12em;box-shadow:0 8px 28px #8d76d333;cursor:pointer}
+button:active{transform:scale(.985)}button:disabled{opacity:.65;cursor:wait}
+#feedback{font-size:13px;line-height:1.5;color:#c7c0df;min-height:20px;max-width:320px} .hidden{display:none}
+</style>
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar" aria-label="Hauptnavigation">
-    <div class="brand"><div class="logo" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M5 9H20V14H15V29H10V14H5Z" fill="currentColor"/><path d="M43 9H28V14H33V29H38V14H43Z" fill="currentColor"/></svg></div><span class="brand-name">ZENITH</span></div>
-    <button class="profile" id="profileButton" aria-label="Profil und Anmeldung"><span class="avatar" id="avatar">◉</span><span class="profile-copy"><strong id="profileName">Nicht angemeldet</strong><small id="profileHint">Konto verbinden</small></span><span class="chevron">⌄</span></button>
-    <div class="nav-label">WORKSPACE</div>
-    <nav class="nav">
-      <button type="button" data-page="browse" class="active"><span class="nav-icon">⌕</span><span class="nav-text">Browse</span></button>
-    </nav>
-    <div class="sidebar-spacer"></div>
-    <div class="sidebar-bottom"><nav class="nav"><button type="button" data-page="settings"><span class="nav-icon">⚙</span><span class="nav-text">Einstellungen</span></button></nav><div class="version">ZENITH CLIENT · 0.2 PREVIEW</div></div>
-  </aside>
-  <main class="main">
-    <header class="topbar"><div class="crumb" id="breadcrumb">Zenith / Browse</div><div class="top-actions"><span class="status">● Vorschau</span><button id="startMinecraft" type="button">▶ Minecraft starten</button><button id="topLogin" type="button">Anmelden</button></div></header><div class="notice hidden" id="launchFeedback" role="status"></div>
-    <div class="page" id="pageContent" aria-live="polite"></div>
-  </main>
-</div>
-<div class="modal-backdrop hidden" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-  <section class="modal">
-    <div class="modal-head"><h2 id="loginTitle">Minecraft-Konto verbinden</h2><button id="closeLogin" aria-label="Schließen">×</button></div>
-    <div class="login-hero"><div class="login-avatar" aria-hidden="true"><div class="head"></div></div><div><strong>Dein Minecraft-Profil</strong><small>Microsoft-Konto · Gamertag · Skin</small></div></div>
-    <p>Verbinde das Microsoft-Konto, mit dem du Minecraft spielst. Du wirst für die Anmeldung auf eine offizielle Microsoft-Seite weitergeleitet.</p>
-    <div class="modal-actions">
-      <button type="button" id="microsoftLogin" class="primary">Mit Microsoft anmelden <span>Das Konto, das du für Minecraft Bedrock verwendest.</span></button>
-    </div>
-    <p class="disclaimer" id="loginMessage">Die Oberfläche ist vorbereitet. Für den echten Login muss Zenith noch mit einer registrierten Microsoft-App und dem Minecraft/Xbox-Anmeldeablauf verbunden werden. Gib dein Passwort nur auf der offiziellen Microsoft-Seite ein.</p>
-  </section>
-</div>
+<main>
+<div class="logo" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M4 8H21V14H15V35H9V14H4Z" fill="currentColor"/><path d="M44 8H27V14H33V35H39V14H44Z" fill="currentColor"/></svg></div>
+<h1 class="brand">ZENITH</h1>
+<p class="subtitle">CLIENT · BEDROCK</p>
+<button id="inject" type="button">INJECT</button>
+<div id="feedback" role="status" aria-live="polite"></div>
+</main>
 <script>
-  const content = document.getElementById('pageContent');
-  const breadcrumb = document.getElementById('breadcrumb');
-  const loginModal = document.getElementById('loginModal');
-  const loginMessage = document.getElementById('loginMessage');
-  let currentPage = 'browse';
-  let settingsTab = 'appearance';
-  const safeRead = (key, fallback=false) => { try { const value=localStorage.getItem('zenith.'+key); return value===null?fallback:value==='true'; } catch (_) { return fallback; } };
-  const safeWrite = (key, value) => { try { localStorage.setItem('zenith.'+key, String(value)); } catch (_) {} };
-  function applySettings(){ document.body.classList.toggle('light-mode',safeRead('lightMode')); document.body.classList.toggle('compact-mode',safeRead('compact')); document.body.classList.toggle('reduce-motion',safeRead('reduceMotion')); document.body.classList.toggle('high-contrast',safeRead('highContrast')); }
-  function settingRow(key,title,description){const enabled=safeRead(key);return '<div class="setting-row"><div><strong>'+title+'</strong><small>'+description+'</small></div><button class="switch" type="button" data-setting="'+key+'" aria-pressed="'+enabled+'" aria-label="'+title+' umschalten"><span class="switch-dot"></span></button></div>';}
-  function bindSettings(){content.querySelectorAll('[data-setting]').forEach(button=>button.addEventListener('click',()=>{const key=button.dataset.setting;const next=button.getAttribute('aria-pressed')!=='true';safeWrite(key,next);button.setAttribute('aria-pressed',String(next));applySettings();if(currentPage==='settings')renderSettings();}));}
-  function renderBrowse(){currentPage='browse';breadcrumb.textContent='Zenith / Browse';content.innerHTML='<div class="welcome"><div class="eyebrow">DEIN BEDROCK WORKSPACE</div><h1>Finde dein nächstes<br><span>Minecraft-Erlebnis.</span></h1><p class="sub">Browse wird der Ort, an dem du später Mods und Inhalte für Minecraft Bedrock entdecken kannst.</p></div><div class="section-head"><div><h2>Browse</h2><p>Der Mod-Browser ist für einen späteren Schritt vorbereitet.</p></div></div><section class="surface empty"><div class="empty-icon">⌕</div><h2>Der Mod-Browser kommt als Nächstes</h2><p>Hier wird später die Suche nach Bedrock-kompatiblen Mods, Packs und Inhalten erscheinen. Es werden noch keine Mods geladen oder installiert.</p><button type="button" class="primary" id="browseInfo">Was kommt hier rein?</button></section><div class="section-head" style="margin-top:25px"><div><h2>Dein Workspace</h2><p>Die Bereiche sind vorbereitet, ohne Funktionen vorzutäuschen.</p></div></div><div class="tiles"><article class="tile"><div class="tile-icon">◉</div><h3>Minecraft-Konto</h3><p>Verbinde dein Microsoft-Konto, das du für Minecraft nutzt, um später Profil und Skin abzurufen.</p></article><article class="tile"><div class="tile-icon">▶</div><h3>Minecraft starten</h3><p>Der native Start von Minecraft Bedrock muss noch mit der Android-App verbunden werden.</p></article></div>';
-    document.getElementById('browseInfo').onclick=()=>{document.getElementById('loginModal').classList.add('hidden');content.querySelector('.empty p').textContent='Geplant sind eine Suche, Filter für Bedrock-kompatible Inhalte und Mod-Details. Installation und Kompatibilität werden erst ergänzt, wenn sie tatsächlich funktionieren.';};}
-  function renderSettings(){currentPage='settings';breadcrumb.textContent='Zenith / Einstellungen';content.innerHTML='<div class="eyebrow">ZENITH ANPASSEN</div><h1>Einstellungen</h1><p class="sub">Passe die Oberfläche an. Deine Auswahl wird lokal auf diesem Gerät gespeichert.</p><div class="settings-layout"><nav class="settings-nav" aria-label="Einstellungsbereiche"><button type="button" data-settings-tab="appearance" class="'+(settingsTab==='appearance'?'active':'')+'">Darstellung</button><button type="button" data-settings-tab="performance" class="'+(settingsTab==='performance'?'active':'')+'">Oberfläche</button><button type="button" data-settings-tab="privacy" class="'+(settingsTab==='privacy'?'active':'')+'">Datenschutz</button><button type="button" data-settings-tab="about" class="'+(settingsTab==='about'?'active':'')+'">Über Zenith</button></nav><section class="settings-content" id="settingsContent"></section></div>';
-    content.querySelectorAll('[data-settings-tab]').forEach(button=>button.onclick=()=>{settingsTab=button.dataset.settingsTab;renderSettings();});const box=document.getElementById('settingsContent');
-    if(settingsTab==='appearance'){box.innerHTML='<h2>Darstellung</h2><p>Wähle, wie Zenith auf deinem Gerät aussieht.</p>'+settingRow('lightMode','Hellmodus','Helles statt dunkles Farbschema')+settingRow('compact','Kompakte Darstellung','Weniger Abstand in der Oberfläche')+settingRow('reduceMotion','Bewegungen reduzieren','UI-Übergänge und Animationen reduzieren')+settingRow('highContrast','Höherer Kontrast','Rahmen und Nebentext deutlicher darstellen');bindSettings();}
-    else if(settingsTab==='performance'){box.innerHTML='<h2>Oberfläche</h2><p>Diese Schalter verändern nur Zenith, nicht die Minecraft-Leistung oder Android-Systemeinstellungen.</p>'+settingRow('compact','Kompakte Darstellung','Weniger Abstand in der Oberfläche')+settingRow('reduceMotion','Bewegungen reduzieren','UI-Übergänge und Animationen reduzieren')+settingRow('highContrast','Höherer Kontrast','Rahmen und Nebentext deutlicher darstellen');bindSettings();}
-    else if(settingsTab==='privacy'){box.innerHTML='<h2>Datenschutz</h2><p>Diese Vorschau fragt keine Passwörter ab und behauptet nicht, ein echtes Konto verbunden zu haben. OAuth wird erst nach Einrichtung der offiziellen App-Konfiguration aktiviert.</p>';}
-    else {box.innerHTML='<h2>Über Zenith</h2><p>Zenith Client ist eine Android-Vorschau mit einer an Minecraft-Menüs angelehnten, blockigen Oberfläche. Microsoft-/Xbox-/Minecraft-Anmeldung, Skin-Abruf und Mod-Installation benötigen noch ihre echte technische Integration.</p><p>Version 0.2 · Navigation mit dauerhaft sichtbarer Seitenleiste</p>';}
-  }
-  function navigate(page){document.querySelectorAll('[data-page]').forEach(button=>button.classList.toggle('active',button.dataset.page===page));if(page==='settings')renderSettings();else renderBrowse();}
-  async function launchMinecraft(){const feedback=document.getElementById('launchFeedback');const plugin=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.MinecraftLauncher;if(!plugin||!plugin.launch){feedback.textContent='Der Minecraft-Start funktioniert nur in der installierten Android-App.';feedback.classList.remove('hidden');return;}try{await plugin.launch();feedback.classList.add('hidden');}catch(error){feedback.textContent=(error&&error.message)?error.message:'Minecraft Bedrock konnte nicht geöffnet werden. Prüfe, ob die offizielle Minecraft-App installiert ist.';feedback.classList.remove('hidden');}}
-  function openLogin(){loginMessage.textContent='Verbinde das Microsoft-Konto, mit dem du Minecraft spielst. Die Anmeldemaske ist vorbereitet; für den echten Login fehlen noch die App-Registrierung und die sichere Xbox-/Minecraft-Token-Verbindung. Gib dein Passwort nur auf einer offiziellen Microsoft-Seite ein.';loginModal.classList.remove('hidden');}
-  document.querySelectorAll('[data-page]').forEach(button=>button.addEventListener('click',()=>navigate(button.dataset.page)));
-  document.getElementById('startMinecraft').addEventListener('click',launchMinecraft);document.getElementById('profileButton').addEventListener('click',openLogin);document.getElementById('topLogin').addEventListener('click',openLogin);document.getElementById('closeLogin').addEventListener('click',()=>loginModal.classList.add('hidden'));loginModal.addEventListener('click',event=>{if(event.target===loginModal)loginModal.classList.add('hidden');});document.addEventListener('keydown',event=>{if(event.key==='Escape')loginModal.classList.add('hidden');});
-  document.getElementById('microsoftLogin').addEventListener('click',()=>{loginMessage.innerHTML='Damit der Login tatsächlich funktioniert, fehlt noch die registrierte Microsoft-App (Client-ID und Redirect-URI) und danach die Xbox-/Minecraft-Token-Verbindung. Microsoft verlangt für mobile Apps Authorization Code + PKCE. Ich kann die App-Oberfläche nicht ehrlich als funktionierenden Login ausgeben, solange diese Konfiguration fehlt. <a href="https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow" target="_blank" rel="noopener noreferrer" style="color:#c5b5ff">Offizielle Microsoft-Anleitung</a>. Gib dein Passwort nur auf der offiziellen Microsoft-Seite ein.';});
-  applySettings();navigate('browse');
+const button=document.getElementById('inject');
+const feedback=document.getElementById('feedback');
+button.addEventListener('click',async()=>{
+ const plugin=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.MinecraftLauncher;
+ if(!plugin||!plugin.launch){feedback.textContent='INJECT funktioniert nur in der installierten Android-App.';return;}
+ button.disabled=true;feedback.textContent='Zenith wird gestartet …';
+ try{await plugin.launch();feedback.textContent='Overlay gestartet. Geh in deine Minecraft-Welt und tippe dort auf den schwebenden Z-Button. Das ist ein Overlay, keine echte Prozess-Injection.';}
+ catch(error){feedback.textContent=(error&&error.message)?error.message:'Minecraft konnte nicht gestartet werden. Prüfe, ob Minecraft Bedrock installiert ist und erlaube Zenith das Anzeigen über anderen Apps.';}
+ finally{button.disabled=false;}
+});
 </script>
 <script>if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}</script>
 </body>
