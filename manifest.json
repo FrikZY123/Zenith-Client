@@ -1,6 +1,6 @@
 {
   "name": "Zenith Client",
-  "short_name": "Zenith",
+  "short_name": "Zenith Client",
   "description": "Zenith Client interface prototype",
   "start_url": "./index.html",
   "scope": "./",
