@@ -51,7 +51,7 @@ jobs:
       - name: Prepare web assets
         run: |
           mkdir -p www
-          cp index.html manifest.json sw.js www/
+          cp index.html manifest.json sw.js icon.svg www/
 
       - name: Generate Android project
         run: |
