@@ -20,6 +20,10 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+      - name: Install SVG renderer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y librsvg2-bin
       - name: Install Capacitor dependencies
         run: npm install
       - name: Prepare web assets
@@ -30,6 +34,15 @@ jobs:
         run: |
           npx cap add android
           npx cap sync android
+          for spec in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do
+            density="${spec%%:*}"
+            size="${spec##*:}"
+            dir="android/app/src/main/res/mipmap-${density}"
+            mkdir -p "$dir"
+            rsvg-convert -w "$size" -h "$size" icon.svg -o "$dir/ic_launcher.png"
+            rsvg-convert -w "$size" -h "$size" icon.svg -o "$dir/ic_launcher_round.png"
+            rsvg-convert -w "$size" -h "$size" icon.svg -o "$dir/ic_launcher_foreground.png"
+          done
       - name: Build debug APK
         run: |
           cd android
