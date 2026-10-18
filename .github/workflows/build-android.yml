@@ -11,6 +11,7 @@ on:
       - 'sw.js'
       - 'package.json'
       - 'capacitor.config.json'
+      - 'resource-pack/**'
       - '.github/workflows/build-android.yml'
 
 permissions:
@@ -143,10 +144,19 @@ jobs:
           test -s "dist/Zenith Client.apk"
           ls -lh "dist/Zenith Client.apk"
 
-      - name: Upload APK
+      - name: Package Zenith title resource pack
+        run: |
+          mkdir -p dist
+          (cd resource-pack && zip -r "../dist/Zenith-Title-Pack.mcpack" manifest.json ui)
+          test -s "dist/Zenith-Title-Pack.mcpack"
+          ls -lh "dist/Zenith-Title-Pack.mcpack"
+
+      - name: Upload APK and title pack
         uses: actions/upload-artifact@v4
         with:
           name: Zenith-Client
-          path: "dist/Zenith Client.apk"
+          path: |
+            dist/Zenith Client.apk
+            dist/Zenith-Title-Pack.mcpack
           if-no-files-found: error
           retention-days: 14
