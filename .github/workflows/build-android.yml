@@ -110,7 +110,7 @@ jobs:
           text = path.read_text()
           if "<queries>" not in text:
               end = text.find(">")
-              text = text[:end + 1] + '\\n    <queries>\\n        <package android:name="com.mojang.minecraftpe" />\\n    </queries>' + text[end + 1:]
+              text = text[:end + 1] + chr(10) + '    <queries>' + chr(10) + '        <package android:name="com.mojang.minecraftpe" />' + chr(10) + '    </queries>' + chr(10) + text[end + 1:]
               path.write_text(text)
           PY
           for spec in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do
