@@ -1,5 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#101114"/>
-  <path d="M92 136H238V190H190V326H136V190H92Z" fill="#FFF2B2"/>
-  <path d="M420 136H274V190H322V326H376V190H420Z" fill="#FFF2B2"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#24242D"/>
+      <stop offset="1" stop-color="#0D0E12"/>
+    </linearGradient>
+    <linearGradient id="butter" x1="0" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#FFF8D5"/>
+      <stop offset="1" stop-color="#FFF0A6"/>
+    </linearGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.95  0 1 0 0 0.88  0 0 1 0 0.52  0 0 0 0.65 0" result="tint"/>
+      <feMerge><feMergeNode in="tint"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFBE8" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#FFF2B2" stop-opacity=".04"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#bg)"/>
+  <rect x="16" y="16" width="480" height="480" rx="104" fill="none" stroke="url(#edge)" stroke-width="2"/>
+  <circle cx="256" cy="256" r="152" fill="#FFF2B2" opacity=".035"/>
+  <circle cx="256" cy="256" r="124" fill="none" stroke="#FFF2B2" stroke-opacity=".09" stroke-width="2"/>
+  <g filter="url(#glow)" fill="url(#butter)">
+    <path d="M92 150H238V204H190V352H136V204H92Z"/>
+    <path d="M420 150H274V204H322V352H376V204H420Z"/>
+  </g>
+  <path d="M110 164H224" stroke="#FFFFFF" stroke-opacity=".36" stroke-width="3" stroke-linecap="round"/>
+  <path d="M402 164H288" stroke="#FFFFFF" stroke-opacity=".36" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="256" cy="256" r="5" fill="#FFF8D5" opacity=".9"/>
 </svg>
