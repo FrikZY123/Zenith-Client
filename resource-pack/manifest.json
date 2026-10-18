@@ -1,0 +1,17 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Zenith Client Title",
+    "description": "Adds a tilted gold Zenith Client label above the Bedrock title screen logo.",
+    "uuid": "cc7f9c2d-4f91-4c85-a3b2-91d8a4c8d251",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "ad8b8b44-3f0c-4f18-95a6-0b34f5a6b3d2",
+      "version": [1, 0, 0]
+    }
+  ]
+}
