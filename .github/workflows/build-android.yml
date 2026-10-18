@@ -77,10 +77,17 @@ jobs:
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump permissions android/app/build/outputs/apk/debug/app-debug.apk
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging android/app/build/outputs/apk/debug/app-debug.apk | head -n 8
 
+      - name: Name the APK for users
+        run: |
+          mkdir -p dist
+          cp "android/app/build/outputs/apk/debug/app-debug.apk" "dist/Zenith Client.apk"
+          test -s "dist/Zenith Client.apk"
+          ls -lh "dist/Zenith Client.apk"
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Zenith-Client-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: Zenith-Client
+          path: "dist/Zenith Client.apk"
           if-no-files-found: error
           retention-days: 14
